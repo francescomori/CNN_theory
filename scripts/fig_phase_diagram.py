@@ -114,7 +114,7 @@ def label_position(lr, cs, grid, sign, candidates):
 
 
 def draw_map(ax, d, P, k, T, sigma, vmax, fontsize):
-    """Draw log10(eps*_CNN / eps*_LCN), the exact boundary and the early-time line on ax.
+    """Draw log10(eps*_CNN / eps*_LCN), the numerical boundary and the early-time line on ax.
 
     Inputs : ax, d (output of sweep), P, k, T, sigma (for c0), vmax (color range),
              fontsize (of the region labels). Outputs: the pcolormesh and the log ratio.
@@ -143,12 +143,14 @@ def plot_main(d):
     fig, ax = plt.subplots(figsize=(7.4, 5.4))
     lr = np.log10(d['best'][0] / d['best'][1])
     pc, _ = draw_map(ax, d, *PAPER[:4], vmax=np.nanmax(np.abs(lr)), fontsize=17)
+    ax.set_xticks([1e-2, 1, 1e2, 1e4])
     ax.set_ylabel(r'Correlation $c$')
     cb = fig.colorbar(pc, ax=ax, pad=0.03)
     cb.set_label(r'$\log_{10}(\varepsilon^*_{\rm CNN}/\varepsilon^*_{\rm LCN})$')
-    h = [Line2D([], [], color='k', lw=2.2, label='Exact ODE'),
-         Line2D([], [], color='C1', ls='--', lw=2.6, label='Early-time approximation')]
-    ax.legend(handles=h, frameon=False, loc='upper center', bbox_to_anchor=(0.5, -0.17), ncol=2, fontsize=15)
+    h = [Line2D([], [], color='k', lw=2.2, label='Numerical (ODEs)'),
+         Line2D([], [], color='C1', ls='--', lw=2.6, label='Analytical (early-time expansion)')]
+    ax.legend(handles=h, frameon=False, loc='upper center', bbox_to_anchor=(0.56, -0.17), ncol=2, fontsize=15,
+              handlelength=2.0, columnspacing=1.2)
     fig.tight_layout()
     common.save(fig, 'phase-diagram')
 
